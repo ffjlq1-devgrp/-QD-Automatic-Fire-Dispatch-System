@@ -1,0 +1,12 @@
+name = "qd-automatic-fire-system"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[[durable_objects.bindings]]
+name = "DISPATCH"
+class_name = "DispatchNetwork"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DispatchNetwork"]

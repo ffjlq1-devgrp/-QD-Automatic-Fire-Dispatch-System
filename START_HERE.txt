@@ -1,0 +1,6 @@
+QD AUTOMATIC FIRE SYSTEM v3.0
+
+Start with: second_life/START HERE - QD Automatic Fire System Setup.txt
+
+This is a complete integration-test package, not yet verified in Second Life.
+It does not require a manually created D1 database.

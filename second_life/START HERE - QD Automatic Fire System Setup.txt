@@ -1,0 +1,90 @@
+QD AUTOMATIC FIRE SYSTEM - START HERE
+=====================================
+This is the installation guide for the QD Automatic Fire System.
+You do NOT need PowerShell or a database ID. Each community has its own server.
+
+IMPORTANT: THIS PACKAGE IS A TEST RELEASE, NOT YET MARKETPLACE-CERTIFIED.
+A live Cloudflare deployment and in-world LSL compilation must still be tested.
+
+PART A - INSTALL THE SERVER (one time per community)
+1. Sign in to your FREE Cloudflare account at https://dash.cloudflare.com/
+2. Open Workers & Pages. Create a Worker connected to your GitHub repository.
+   Upload the SERVER files from the ROOT of this ZIP to your repository first.
+   (The files are worker.js, wrangler.toml, package.json, tests, etc.)
+3. Set the deploy command to: npx wrangler deploy
+   Leave the build command empty. Set the production branch to main.
+4. Wait for Cloudflare to report that the Worker was deployed.
+5. Copy the URL ending in .workers.dev from the Worker dashboard.
+6. Open that URL followed by /setup (example: https://example.workers.dev/setup).
+7. Click 'Activate my dispatch network'. Copy the private NETWORK KEY displayed.
+   DO NOT share this key. Do not publish it on GitHub.
+8. Visit the same server URL followed by /health. It should say ok:true.
+
+PART B - PREPARE YOUR SECOND LIFE EQUIPMENT
+9. Every equipment item needs its matching script AND CONFIG notecard inside it:
+   Master Generator: Master_Generator.lsl and Master_CONFIG
+   Station Alarm Box: Station_Alarm_Box.lsl and Station_CONFIG
+   Region Repeater: Region_Repeater.lsl and Repeater_CONFIG
+   Fire Node: Fire_Node.lsl and Node_CONFIG
+10. In EVERY CONFIG notecard, enter:
+    COMMUNITY_NAME=Your Community Name
+    SERVER_URL=https://your-worker.workers.dev
+    NETWORK_KEY=the-private-key-from-step-7
+    Do not put these values into the scripts themselves.
+11. Rez the Master Generator. It is the only incident creator.
+12. Rez a Station Alarm Box at each station. Edit its Station_CONFIG:
+    STATION_NAME=your station name
+    APPARATUS.ENGINE=2 (example; see full Station_CONFIG)
+    Set the sound UUIDs and sequence names as described in Station_CONFIG.
+    More than one box per station or region is allowed.
+13. Rez Fire Nodes at locations where an alarm could activate.
+    For EACH node, edit Node_CONFIG:
+    NODE_NAME=street address or building name
+    BUILDING_TYPE=RESIDENTIAL (or another value below)
+    ADDRESS_SOUND=the sound UUID for this address
+    ADDRESS_DURATION=length of that sound in seconds
+    Put the three REZZABLE fire objects inside each node's Contents:
+    Small Fire, Medium Fire, Large Fire (or match custom names in Node_CONFIG).
+14. BUILDING_TYPE choices:
+    RESIDENTIAL: houses
+    MULTI_RESIDENTIAL: apartments
+    COMMERCIAL: shops/offices
+    INDUSTRIAL: factories/warehouses
+    INSTITUTIONAL: schools/hospitals
+    WILDLAND: forest/brush
+    OUTDOOR: roadways/parking areas
+15. Rez a Region Repeater in regions with Fire Nodes when you want it to
+    bridge those nodes. A node can also connect directly if no repeater is heard.
+    Repeaters do NOT need manually entered peers.
+
+PART C - TEST
+16. Wait up to 2 minutes for station and node registration.
+17. Touch the Master Generator and choose Status. Check online counts.
+18. Touch the Master Generator and choose Dispatch Now.
+19. Wait for the Station Alarm Box to receive the dispatch. The incident
+    will NOT spawn yet.
+20. Touch the Station Alarm Box, then select RESPONDING.
+21. The selected Fire Node now makes ONE random decision:
+    25% false alarm - no fire object appears
+    25% small fire - Small Fire appears
+    25% medium fire - Medium Fire appears
+    25% large fire - Large Fire appears, AND every other node within
+    7 metres of the original node spawns its own Large Fire object.
+    Nearby nodes do not roll again or create additional dispatches.
+22. A false alarm is a successful test too. Try another dispatch later.
+
+IF SOMETHING DOESN'T WORK
+- If a script fails to save, note its exact script name, line and column.
+- If an object says 'Missing Node_CONFIG', check the notecard name exactly.
+- If a station says 'network key rejected', verify the same private key is
+  in every CONFIG. Do not paste the key into public chat.
+- If there are no nodes, wait for registration and check the SERVER_URL.
+- If no fire appears, the result may be a false alarm (25%). Check owner chat.
+- If a node reports a missing fire object, check object inventory names.
+- A worker showing 'deployed' does not guarantee the Second Life scripts work.
+
+SAFETY AND LIMITS
+- Cloudflare Free tier has usage limits. Larger communities may exceed them.
+- This version still uses manual notecard setup. One-click Marketplace
+  provisioning and secure in-world pairing are not yet implemented.
+- Do not share your private network key or your /setup page before activation.
